@@ -1,12 +1,12 @@
 import streamlit as st
+import os
 
 from demo_app.components.faq import faq
 
-
-def set_open_api_key(api_key: str):
+def set_open_api_key_(api_key: str):
     st.session_state["OPENAI_API_KEY"] = api_key
-    st.session_state["open_api_key_configured"] = True
-    print(st.session_state["open_api_key_configured"])
+    os.environ["OPENAI_API_KEY"] = api_key
+    st.session_state["OPENAI_API_CONFIGURED"] = True
     print('OPENAI API key is Configured Successfully!')
 
 
@@ -25,10 +25,9 @@ def sidebar():
         )
 
         if open_api_key_input:
-            print(f'Entered API is {open_api_key_input}')
-            set_open_api_key(open_api_key_input)
+            set_open_api_key_(open_api_key_input)
 
-        if not st.session_state.get("open_api_key_configured"):
+        if not st.session_state.get("OPENAI_API_CONFIGURE"):
             st.error("Please configure your Open API key!")
         else:
             st.markdown("Open API Key Configured!")
@@ -36,10 +35,10 @@ def sidebar():
         st.markdown("---")
         st.markdown("# About")
         st.markdown(
-            "📖 This App is template of lanchain-streamlit-docker example"
+            "📖 This App is template of embedchain-streamlit-app example"
         )
         st.markdown("Made by [DR. AMJAD RAZA](https://www.linkedin.com/in/amjadraza/)")
-        st.markdown("Credits for Template [hwchase17](https://github.com/hwchase17/langchain-streamlit-template)")
+        st.markdown("embedchain: https://github.com/embedchain/embedchain")
         st.markdown("---")
 
         faq()

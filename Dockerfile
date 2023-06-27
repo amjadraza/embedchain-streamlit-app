@@ -16,8 +16,6 @@ EXPOSE 8080
 
 WORKDIR /app
 
-#COPY pyproject.toml ./app/pyproject.toml
-#COPY poetry.lock ./app/poetry.lock
 COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
