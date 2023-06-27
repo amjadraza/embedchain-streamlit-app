@@ -76,7 +76,7 @@ Deploy App on Streamlit Public Cloud
 This app can be deployed on Streamlit Public Cloud using GitHub. Below is the Link to 
 Publicly deployed App
 
-https://langchain-docker-template-amjadraza.streamlit.app/
+https://embedchain.streamlit.app/
 
 
 
