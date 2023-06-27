@@ -32,7 +32,7 @@ Depending on the type of your chain, you may also need to change the inputs/outp
 1. Clone the repository📂
 
 ```bash
-git clone https://github.com/amjadraza/langchain-streamlit-docker-template.git
+git clone https://github.com/amjadraza/embedchain-streamlit-app.git
 ```
 
 2. Install dependencies with [Poetry](https://python-poetry.org/) and activate virtual environment🔨

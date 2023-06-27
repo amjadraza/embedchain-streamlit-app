@@ -3,7 +3,7 @@ import os
 
 from demo_app.components.faq import faq
 
-def set_open_api_key_(api_key: str):
+def set_open_api_key(api_key: str):
     st.session_state["OPENAI_API_KEY"] = api_key
     os.environ["OPENAI_API_KEY"] = api_key
     st.session_state["OPENAI_API_CONFIGURED"] = True
@@ -25,9 +25,9 @@ def sidebar():
         )
 
         if open_api_key_input:
-            set_open_api_key_(open_api_key_input)
+            set_open_api_key(open_api_key_input)
 
-        if not st.session_state.get("OPENAI_API_CONFIGURE"):
+        if not st.session_state.get("OPENAI_API_CONFIGURED"):
             st.error("Please configure your Open API key!")
         else:
             st.markdown("Open API Key Configured!")

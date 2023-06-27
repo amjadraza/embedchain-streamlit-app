@@ -24,7 +24,7 @@ def ingest_data(data_urls):
 
 def response_embedchain(query):
     """Logic for loading the chain you want to use should go here."""
-    print(f'Calling respone on: {query}')
+    print(f'Calling response on: {query}')
     response = naval_chat_bot.query(query)
     print(response)
     return response
@@ -64,11 +64,11 @@ if __name__ == "__main__":
     if submit_data_form:
         st.session_state["submit_data_form"] = True
 
-    if st.session_state.get("OPENAI_API_CONFIGURED") or not st.session_state.get("submit_data_form"):
+    if not st.session_state.get("OPENAI_API_CONFIGURED") or not st.session_state.get("submit_data_form"):
         st.error("Please configure your API Keys! and Submit the form")
 
     if st.session_state.get("OPENAI_API_CONFIGURED") and st.session_state.get("submit_data_form"):
-        st.markdown("Main App: Stated")
+        st.markdown("Main App: Started")
         from embedchain import App as ecApp
 
         naval_chat_bot = ecApp()
