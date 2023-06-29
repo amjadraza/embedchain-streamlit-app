@@ -155,3 +155,5 @@ credentials.json
 token.json
 
 /db/
+
+requirements.txt
