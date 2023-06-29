@@ -102,10 +102,10 @@ if __name__ == "__main__":
                 # Add user message to chat history
                 st.session_state.messages.append({"role": "user", "content": user_input})
                 # Display user message in chat message container
-                with st.chat_message("user", avatar="🧑‍"):
+                with st.chat_message("user"):
                     st.markdown(user_input)
                 # Display assistant response in chat message container
-                with st.chat_message("assistant", avatar="🤖"):
+                with st.chat_message("assistant"):
                     message_placeholder = st.empty()
                     full_response = ""
 
