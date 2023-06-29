@@ -1,11 +1,11 @@
 """Python file to serve as the frontend"""
 import sys
 import os
+import time
 
 sys.path.append(os.path.abspath('.'))
 
 import streamlit as st
-from streamlit_chat import message
 from demo_app.components.sidebar import sidebar
 
 
@@ -29,6 +29,34 @@ def response_embedchain(query):
     print(response)
     return response
 
+
+def provide_data_urls():
+    with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
+        form = st.form(key="source-data", clear_on_submit=False)
+        youtube_video = form.text_input("Enter URL youtube video",
+                                        autocomplete="https://www.youtube.com/watch?v=3qHkcs3kG44",
+                                        placeholder="https://www.youtube.com/watch?v=3qHkcs3kG44")
+        pdf_file = form.text_input("Enter URL: pdf",
+                                   autocomplete="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf",
+                                   placeholder="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf")
+        web_page_1 = form.text_input("Enter URL: web page",
+                                     autocomplete="https://nav.al/feedback",
+                                     placeholder="https://nav.al/feedback")
+        submit_data_form = form.form_submit_button("Submit", on_click=toggle_closed)
+
+        if submit_data_form:
+            st.session_state["submit_data_form"] = True
+
+    data_dict = {'youtube_video': youtube_video,
+                 'pdf_file': pdf_file,
+                 'web_page_1': web_page_1}
+    return data_dict
+
+
+def toggle_closed():
+    st.session_state["expander_state"] = False
+
+
 if __name__ == "__main__":
 
     st.set_page_config(
@@ -37,32 +65,13 @@ if __name__ == "__main__":
         layout="wide",
         initial_sidebar_state="expanded", )
     st.header("📖 Chat App: EmbedChain Demo")
-    if "messages" not in st.session_state:
-        st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+
     sidebar()
 
     if "expander_state" not in st.session_state:
         st.session_state["expander_state"] = True
 
-    def toggle_closed():
-        st.session_state["expander_state"] = False
-
-    with st.expander("Source Data Form", expanded = st.session_state["expander_state"]):
-        form = st.form(key="source-data", clear_on_submit=False)
-        youtube_video = form.text_input("Enter URL youtube video",
-                                        placeholder="https://www.youtube.com/watch?v=3qHkcs3kG44")
-        pdf_file = form.text_input("Enter URL: pdf",
-                                   placeholder="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf")
-        web_page_1 = form.text_input("Enter URL: web page",
-                                     placeholder="https://nav.al/feedback")
-        submit_data_form = form.form_submit_button("Submit", on_click=toggle_closed)
-
-    data_dict = {'youtube_video': youtube_video,
-                 'pdf_file': pdf_file,
-                 'web_page_1': web_page_1}
-
-    if submit_data_form:
-        st.session_state["submit_data_form"] = True
+    data_dict = provide_data_urls()
 
     if not st.session_state.get("OPENAI_API_CONFIGURED") or not st.session_state.get("submit_data_form"):
         st.error("Please configure your API Keys! and Submit the form")
@@ -79,33 +88,38 @@ if __name__ == "__main__":
             st.success('Data Ingestion Done!')
 
         if st.session_state.get("IS_BOT_READY"):
-            if "generated" not in st.session_state:
-                st.session_state["generated"] = []
 
-            if "past" not in st.session_state:
-                st.session_state["past"] = []
+            if "messages" not in st.session_state:
+                st.session_state["messages"] = [
+                    {"role": "assistant", "content": "How can I help you?"}]
 
-            with st.form("chat_input", clear_on_submit=True):
-                a, b = st.columns([4, 1])
-                user_input = a.text_input(
-                    label="Your message:",
-                    placeholder="What would you like to say?",
-                    label_visibility="collapsed",
-                )
-                b.form_submit_button("Send", use_container_width=True)
+            # Display chat messages from history on app rerun
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
 
-            print(user_input)
-
-            for idx, msg in enumerate(st.session_state.messages):
-                message(msg["content"], is_user=msg["role"] == "user", key=idx)
-
-            if user_input:
+            if user_input := st.chat_input("What is your question?"):
+                # Add user message to chat history
                 st.session_state.messages.append({"role": "user", "content": user_input})
-                message(user_input, is_user=True)
+                # Display user message in chat message container
+                with st.chat_message("user", avatar="🧑‍"):
+                    st.markdown(user_input)
+                # Display assistant response in chat message container
+                with st.chat_message("assistant", avatar="🤖"):
+                    message_placeholder = st.empty()
+                    full_response = ""
 
-                with st.spinner('CHAT-BOT is at Work ...'):
-                    response = response_embedchain(user_input)
-                    # st.success('Done')
-                st.session_state.messages.append({"role": "assistant", "content": response})
-                message(response)
+                with st.chat_message("assistant"):
+                    message_placeholder = st.empty()
+                    full_response = ""
 
+                    with st.spinner('CHAT-BOT is at Work ...'):
+                        assistant_response = response_embedchain(user_input)
+                    # Simulate stream of response with milliseconds delay
+                    for chunk in assistant_response.split():
+                        full_response += chunk + " "
+                        time.sleep(0.05)
+                        # Add a blinking cursor to simulate typing
+                        message_placeholder.markdown(full_response + "▌")
+                    message_placeholder.markdown(full_response)
+                st.session_state.messages.append({"role": "assistant", "content": full_response})
