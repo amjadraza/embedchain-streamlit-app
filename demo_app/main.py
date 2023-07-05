@@ -9,19 +9,16 @@ import streamlit as st
 from demo_app.components.sidebar import sidebar
 
 
-def ingest_data(data_urls):
-
-    for k, v in data_urls.items():
-        print(f"Ingesting:{v}")
-        naval_chat_bot.add(k, v)
-    st.session_state["IS_BOT_READY"] = True
-
-
 def ingest_data_dynamic(n):
     for r in range(n):
         key_ = st.session_state.get(f"{r}")[0]
         value_ = st.session_state.get(f"{r}")[1]
-        naval_chat_bot.add(key_, value_)
+        if key_ == "qna_pair":
+            key_value = value_.split(',')
+            naval_chat_bot.add(key_, (key_value[0], key_value[1]))
+        else:
+            naval_chat_bot.add(key_, value_)
+
     st.session_state["IS_BOT_READY"] = True
 
 
@@ -55,7 +52,7 @@ def add_form_row(row):
 
 def provide_data_dynamic():
 
-    with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
+    with st.expander("Sources Data Form", expanded=st.session_state["expander_state"]):
         num_data_sources = st.slider('Number of Data Sources', min_value=1, max_value=10)
         for r in range(num_data_sources):
             add_form_row(r)
@@ -65,33 +62,6 @@ def provide_data_dynamic():
         return num_data_sources
 
 
-def provide_data_urls():
-    # a selection for the user to specify the number of rows
-    num_data_sources = st.slider('Number of Data Sources', min_value=1, max_value=10)
-    loaders_type = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
-    with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
-        form = st.form(key="source-data", clear_on_submit=False)
-
-        youtube_video = form.text_input("Enter URL youtube video",
-                                        value="https://www.youtube.com/watch?v=3qHkcs3kG44")
-        pdf_file = form.text_input("Enter URL: pdf",
-                                   value="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf")
-        web_page_link = form.text_input("Enter URL: web page",
-                                     value="https://nav.al/agi")
-        submit_data_form = form.form_submit_button("Submit", on_click=toggle_closed)
-
-        if submit_data_form:
-            st.session_state["submit_data_form"] = True
-
-    data_dict = {'youtube_video': youtube_video,
-                 'pdf_file': pdf_file,
-                 'web_page': web_page_link}
-
-    # data_dict = {'pdf_file': pdf_file,
-    #              'web_page': web_page_link}
-    return data_dict
-
-
 def toggle_closed():
     st.session_state["expander_state"] = False
 
@@ -99,11 +69,11 @@ def toggle_closed():
 if __name__ == "__main__":
 
     st.set_page_config(
-        page_title="Chat App: EmbedChain Demo",
+        page_title=" : EmbedChain Demo",
         page_icon="📖",
         layout="wide",
         initial_sidebar_state="expanded", )
-    st.header("📖 Chat App: EmbedChain Demo")
+    st.header("📖 Private Knowledge Store: EmbedChain Demo")
 
     sidebar()
 

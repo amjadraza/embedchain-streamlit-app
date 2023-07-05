@@ -59,6 +59,7 @@ def sidebar():
             | youtube  | https://www.youtube.com/watch?v=3qHkcs3kG44   |
             | pdf_file |https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf    |
             | web    | https://nav.al/feedback  |
+            |qna_pair| "Who is Naval Ravikant?", "Naval Ravikant is an Indian-American entrepreneur and investor." |
             
             Question: What unique capacity does Naval argue humans possess when it comes to understanding explanations or concepts? 
             """
