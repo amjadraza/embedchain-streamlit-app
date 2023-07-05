@@ -11,9 +11,11 @@ from demo_app.components.sidebar import sidebar
 
 def ingest_data(data_urls):
 
-    naval_chat_bot.add("youtube_video", data_urls['youtube_video'])
-    naval_chat_bot.add("pdf_file", data_urls['pdf_file'])
-    naval_chat_bot.add("web_page", data_urls['web_page_1'])
+    for k, v in data_urls.items():
+        print(f"Ingesting:{v}")
+        naval_chat_bot.add(k, v)
+    # naval_chat_bot.add("pdf_file", data_urls['pdf_file'])
+    # naval_chat_bot.add("web_page", data_urls['web_page_1'])
 
     st.session_state["IS_BOT_READY"] = True
     # naval_chat_bot.add("web_page", data_urls['web_page_2'])
@@ -26,22 +28,19 @@ def response_embedchain(query):
     """Logic for loading the chain you want to use should go here."""
     print(f'Calling response on: {query}')
     response = naval_chat_bot.query(query)
-    print(response)
     return response
 
 
 def provide_data_urls():
     with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
         form = st.form(key="source-data", clear_on_submit=False)
+
         youtube_video = form.text_input("Enter URL youtube video",
-                                        autocomplete="https://www.youtube.com/watch?v=3qHkcs3kG44",
-                                        placeholder="https://www.youtube.com/watch?v=3qHkcs3kG44")
+                                        value="https://www.youtube.com/watch?v=3qHkcs3kG44")
         pdf_file = form.text_input("Enter URL: pdf",
-                                   autocomplete="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf",
-                                   placeholder="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf")
-        web_page_1 = form.text_input("Enter URL: web page",
-                                     autocomplete="https://nav.al/feedback",
-                                     placeholder="https://nav.al/feedback")
+                                   value="https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf")
+        web_page_link = form.text_input("Enter URL: web page",
+                                     value="https://nav.al/agi")
         submit_data_form = form.form_submit_button("Submit", on_click=toggle_closed)
 
         if submit_data_form:
@@ -49,7 +48,10 @@ def provide_data_urls():
 
     data_dict = {'youtube_video': youtube_video,
                  'pdf_file': pdf_file,
-                 'web_page_1': web_page_1}
+                 'web_page': web_page_link}
+
+    # data_dict = {'pdf_file': pdf_file,
+    #              'web_page': web_page_link}
     return data_dict
 
 
