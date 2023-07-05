@@ -14,14 +14,15 @@ def ingest_data(data_urls):
     for k, v in data_urls.items():
         print(f"Ingesting:{v}")
         naval_chat_bot.add(k, v)
-    # naval_chat_bot.add("pdf_file", data_urls['pdf_file'])
-    # naval_chat_bot.add("web_page", data_urls['web_page_1'])
-
     st.session_state["IS_BOT_READY"] = True
-    # naval_chat_bot.add("web_page", data_urls['web_page_2'])
 
-    # Embed Local Resources
-    # naval_chat_bot.add_local("qna_pair", data_urls['pdf_file'])
+
+def ingest_data_dynamic(n):
+    for r in range(n):
+        key_ = st.session_state.get(f"{r}")[0]
+        value_ = st.session_state.get(f"{r}")[1]
+        naval_chat_bot.add(key_, value_)
+    st.session_state["IS_BOT_READY"] = True
 
 
 def response_embedchain(query):
@@ -31,10 +32,43 @@ def response_embedchain(query):
     return response
 
 
+def add_data_form(r):
+    st.session_state[f"{r}"] = [st.session_state.get(f"key_{r}"), st.session_state.get(f"value_{r}")]
+    print(st.session_state.get(f"{r}"))
+
+
+def add_form_row(row):
+    # Inputs listed within a form
+    loaders_type = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
+    data_form = st.form(key=f'{row}-Form')
+    with data_form:
+        data_columns = st.columns(2)
+        with data_columns[0]:
+            st.selectbox(label=f"Select Data Source: {row}", options=loaders_type,
+                         key=f"key_{row}")
+        with data_columns[1]:
+            st.text_input(f"Enter Doc URL: {row}",
+                            value="https://www.youtube.com/watch?v=3qHkcs3kG44",
+                            key=f"value_{row}")
+        st.form_submit_button(on_click=add_data_form(row))
+
+
+def provide_data_dynamic():
+
+    with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
+        num_data_sources = st.slider('Number of Data Sources', min_value=1, max_value=10)
+        for r in range(num_data_sources):
+            add_form_row(r)
+        submit_data_form = st.button("Submit Data", on_click=toggle_closed)
+        if submit_data_form:
+            st.session_state["submit_data_form"] = True
+        return num_data_sources
+
+
 def provide_data_urls():
     # a selection for the user to specify the number of rows
-    # num_data_sources = st.slider('Number of Data Sources', min_value=1, max_value=10)
-    # loaders = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
+    num_data_sources = st.slider('Number of Data Sources', min_value=1, max_value=10)
+    loaders_type = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
     with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
         form = st.form(key="source-data", clear_on_submit=False)
 
@@ -76,10 +110,14 @@ if __name__ == "__main__":
     if "expander_state" not in st.session_state:
         st.session_state["expander_state"] = True
 
-    data_dict = provide_data_urls()
+    # data_dict = provide_data_urls()
+    num_data_sources = provide_data_dynamic()
 
-    if not st.session_state.get("OPENAI_API_CONFIGURED") or not st.session_state.get("submit_data_form"):
-        st.error("Please configure your API Keys! and Submit the form")
+    if not st.session_state.get("OPENAI_API_CONFIGURED"):
+        st.error("Please configure your API Keys!")
+
+    if not st.session_state.get("submit_data_form"):
+        st.error("Please Submit the Data Form")
 
     if st.session_state.get("OPENAI_API_CONFIGURED") and st.session_state.get("submit_data_form"):
         st.markdown("Main App: Started")
@@ -88,7 +126,8 @@ if __name__ == "__main__":
         # ingesting data
         if not st.session_state.get("IS_BOT_READY"):
             with st.spinner('Wait for DATA Ingestion'):
-                ingest_data(data_dict)
+                # ingest_data(data_dict)
+                ingest_data_dynamic(num_data_sources)
             st.success('Data Ingestion Done!')
 
         if st.session_state.get("IS_BOT_READY"):
@@ -112,7 +151,6 @@ if __name__ == "__main__":
                 with st.chat_message("assistant"):
                     message_placeholder = st.empty()
                     full_response = ""
-
                 with st.chat_message("assistant"):
                     message_placeholder = st.empty()
                     full_response = ""

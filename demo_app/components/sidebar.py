@@ -18,7 +18,6 @@ def sidebar():
         try:
             api_key = os.getenv("OPENAI_API_KEY")
             os.environ["OPENAI_API_KEY"] = api_key
-            print(api_key)
             st.session_state["OPENAI_API_CONFIGURED"] = True
             st.markdown("Open API Key Configured!")
         except:
