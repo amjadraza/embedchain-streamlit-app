@@ -32,6 +32,9 @@ def response_embedchain(query):
 
 
 def provide_data_urls():
+    # a selection for the user to specify the number of rows
+    # num_data_sources = st.slider('Number of Data Sources', min_value=1, max_value=10)
+    # loaders = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
     with st.expander("Source Data Form", expanded=st.session_state["expander_state"]):
         form = st.form(key="source-data", clear_on_submit=False)
 
@@ -81,7 +84,6 @@ if __name__ == "__main__":
     if st.session_state.get("OPENAI_API_CONFIGURED") and st.session_state.get("submit_data_form"):
         st.markdown("Main App: Started")
         from embedchain import App as ecApp
-
         naval_chat_bot = ecApp()
         # ingesting data
         if not st.session_state.get("IS_BOT_READY"):
