@@ -2,7 +2,10 @@
 📖 EmbedChain-Streamlit-Docker App Template
 </h1>
 
-![UI](ui.PNG?raw=true)
+[![A Video Guide](ui.PNG?raw=true)](https://youtu.be/yJAWB13FhYQ)
+
+[https://youtu.be/yJAWB13FhYQ](https://youtu.be/yJAWB13FhYQ)
+
 
 ## 🔧 Features
 
