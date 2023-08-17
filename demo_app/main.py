@@ -12,7 +12,7 @@ def ingest_data_dynamic(n):
     print(f'Number of Data Sources are {n}')
     for r in range(n):
         url_= st.session_state.get(f"value_{r}")
-        print(f"Ingestion {r}/{n}: {url_}")
+        print(f"Ingestion {r+1}/{n}: {url_}")
         naval_chat_bot.add("https://www.youtube.com/watch?v=3qHkcs3kG44")
 
     st.session_state["IS_BOT_READY"] = True
@@ -24,9 +24,9 @@ def response_embedchain(query):
     response = naval_chat_bot.query(query)
     return response
 
-# def add_data_form(r):
-#     st.session_state[f"url_{r}"] = [st.session_state.get(f"value_{r}")]
-#     print(st.session_state.get(f"{r}"))
+def add_data_form(r):
+    st.session_state[f"url_{r}"] = [st.session_state.get(f"value_{r}")]
+    print(st.session_state.get(f"{r}"))
 
 
 def add_form_row(row):
@@ -61,8 +61,8 @@ def toggle_closed():
 if __name__ == "__main__":
 
     st.set_page_config(
-        page_title=" : EmbedChain Demo",
-        page_icon="📖",
+        page_title="💂‍♂️: EmbedChain Demo",
+        page_icon="💂‍♂️",
         layout="wide",
         initial_sidebar_state="expanded", )
     st.header("📖 Private Knowledge Store: EmbedChain Demo")
