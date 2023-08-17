@@ -61,8 +61,8 @@ def toggle_closed():
 if __name__ == "__main__":
 
     st.set_page_config(
-        page_title=" : EmbedChain Demo",
-        page_icon="📖",
+        page_title="💂‍♂️: EmbedChain Demo",
+        page_icon="💂‍♂️",
         layout="wide",
         initial_sidebar_state="expanded", )
     st.header("📖 Private Knowledge Store: EmbedChain Demo")
