@@ -54,7 +54,7 @@ poetry shell
 3. Run the Streamlit server🚀
 
 ```bash
-streamlit run app/main.py 
+streamlit run demo_app/main.py 
 ```
 
 Run App using Docker
