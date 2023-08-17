@@ -24,9 +24,9 @@ def response_embedchain(query):
     response = naval_chat_bot.query(query)
     return response
 
-# def add_data_form(r):
-#     st.session_state[f"url_{r}"] = [st.session_state.get(f"value_{r}")]
-#     print(st.session_state.get(f"{r}"))
+def add_data_form(r):
+    st.session_state[f"url_{r}"] = [st.session_state.get(f"value_{r}")]
+    print(st.session_state.get(f"{r}"))
 
 
 def add_form_row(row):
