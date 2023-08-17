@@ -8,16 +8,12 @@ sys.path.append(os.path.abspath('.'))
 import streamlit as st
 from demo_app.components.sidebar import sidebar
 
-
 def ingest_data_dynamic(n):
+    print(f'Number of Data Sources are {n}')
     for r in range(n):
-        key_ = st.session_state.get(f"{r}")[0]
-        value_ = st.session_state.get(f"{r}")[1]
-        if key_ == "qna_pair":
-            key_value = value_.split(',')
-            naval_chat_bot.add(key_, (key_value[0], key_value[1]))
-        else:
-            naval_chat_bot.add(key_, value_)
+        url_= st.session_state.get(f"value_{r}")
+        print(f"Ingestion {r}/{n}: {url_}")
+        naval_chat_bot.add("https://www.youtube.com/watch?v=3qHkcs3kG44")
 
     st.session_state["IS_BOT_READY"] = True
 
@@ -28,22 +24,18 @@ def response_embedchain(query):
     response = naval_chat_bot.query(query)
     return response
 
-
-def add_data_form(r):
-    st.session_state[f"{r}"] = [st.session_state.get(f"key_{r}"), st.session_state.get(f"value_{r}")]
-    print(st.session_state.get(f"{r}"))
+# def add_data_form(r):
+#     st.session_state[f"url_{r}"] = [st.session_state.get(f"value_{r}")]
+#     print(st.session_state.get(f"{r}"))
 
 
 def add_form_row(row):
     # Inputs listed within a form
-    loaders_type = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
+    # loaders_type = ["youtube_video", "pdf_file", "web_page", "qna_pair", "text"]
     data_form = st.form(key=f'{row}-Form')
     with data_form:
-        data_columns = st.columns(2)
+        data_columns = st.columns(1)
         with data_columns[0]:
-            st.selectbox(label=f"Select Data Source: {row}", options=loaders_type,
-                         key=f"key_{row}")
-        with data_columns[1]:
             st.text_input(f"Enter Doc URL: {row}",
                             value="https://www.youtube.com/watch?v=3qHkcs3kG44",
                             key=f"value_{row}")
