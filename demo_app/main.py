@@ -13,7 +13,7 @@ def ingest_data_dynamic(n):
     for r in range(n):
         url_= st.session_state.get(f"value_{r}")
         print(f"Ingestion {r+1}/{n}: {url_}")
-        naval_chat_bot.add("https://www.youtube.com/watch?v=3qHkcs3kG44")
+        naval_chat_bot.add(url_)
 
     st.session_state["IS_BOT_READY"] = True
 
